@@ -59,9 +59,19 @@
     <script type='module'>
 
 import {PlayerObject} from './js/PlayerObject.js'
+import {PlayerSesnor} from './js/PlayerSesnor.js'
 
-var player = new PlayerObject();
-player.callme();
+
+
+var createPhysicsImpostor = function(scene, entity, impostor, options, reparent) {
+    if (entity == null) return;
+    entity.checkCollisions = false;
+    const parent = entity.parent;
+    if (reparent === true) entity.parent = null;
+    entity.physicsImpostor = new BABYLON.PhysicsImpostor(entity, impostor, options, scene);
+    if (reparent === true) entity.parent = parent;
+};
+
 
 
         window.addEventListener('DOMContentLoaded', function(){
@@ -78,321 +88,37 @@ var createScene = function () {
     var scene = new BABYLON.Scene(engine);
   	scene.debugLayer.show();
 
-    var gravityVector = new BABYLON.Vector3(0,-70, 0);
+    var gravityVector = new BABYLON.Vector3(0,-9.8, 0);
 	var physicsPlugin = new BABYLON.CannonJSPlugin();
 	scene.enablePhysics(gravityVector, physicsPlugin);
     scene.collisionsEnabled = true;
 
-	/*
-	DEBUG camera 
+	
+/*
     var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 5, -10), scene);
     camera.attachControl(canvas, true);
     camera.setTarget(new BABYLON.Vector3(0, 0, 0));
-	*/
-
-/*
-    var sphere = BABYLON.Mesh.CreateSphere("player", 8, .5, scene);
-    sphere.position.y = 1;
-  		sphere.speed = new BABYLON.Vector3(0, 0, 0.08);
-  		sphere.physicsImpostor = new BABYLON.PhysicsImpostor(sphere, BABYLON.PhysicsImpostor.SphereImpostor, { mass: 100, restitution: 0.1 }, scene);*/
-
-var getAnim = function(name,animations){
-
-	var varreturn = null;
-		animations.forEach(function(anim,index){
-			
-    					if(anim.name == name) {
-    					
-    						varreturn = anim;
-    					}
-    			
-    		});
-		return varreturn;
-}
-
-
-//gamepad 
-
-var player_moving = false;
-var current_game_xy;
-	var gamepadManager = new BABYLON.GamepadManager();
-gamepadManager.onGamepadConnectedObservable.add((gamepad, state)=>{
-    gamepad.onButtonDownObservable.add((button, state)=>{
-        //Button has been pressed
- 
-        if(button == 9) {
-        	var dis = document.getElementById('menu').style.display;
-        	if(dis == 'block'){
-        	document.getElementById('menu').style.display = 'none';
-        	} else {
-        	document.getElementById('menu').style.display = 'block';
-        	}
-        	console.log(document.getElementById('menu'))
-        }
-    })
-    /*
-    * right =  x->1
-    * left =  x->-1
-    * up = y->-1
-    * down = y->1
-    */
-    gamepad.onleftstickchanged((values)=>{
-    	var x = Math.floor(values.x);
-    	var y = Math.floor(values.y);
-    
-
-    	if(x == 0 && y == 0) {
-    	player_moving = false;
-    	play_run_stop = true;
-    	} else {
-    	player_moving = true;
-    	}
-    	current_game_xy = values;
-        //Left stick has been moved
-
-       // moveplayer(values.x,values.y)
-    })
-     gamepad.onrightstickchanged((values)=>{
-     	var x = Math.floor(values.x);
-    	var y = Math.floor(values.y);
-    	if(x != 0 && y != 0) {
-    	player_moving = true;
-
-    	} else {
-    	player_moving = false;
-    	}
-    	current_game_xy = values;
-        //Left stick has been moved
-
-       // moveplayer(values.x,values.y)
-    })
-}
-);
-
-   function moveplayer(x,y){
-			x = Math.floor(x);
-			y = Math.floor(y);
-
-			if(typeof hitbox != 'undefined'){
-						 if(true){
-
-
-
-
-						var xx = sphere.forward.x * .15;
-					       var z = sphere.forward.z * .15;
-			 if(x == -1 || inputMap["a"] || inputMap["ArrowLeft"]){
-					 sphere.rotate(BABYLON.Axis.Y, -.03, BABYLON.Space.WORLD);
-
-					    } 
-					
-					  if(x == 1 || inputMap["d"] || inputMap["ArrowRight"]){			  
-					   sphere.rotate(BABYLON.Axis.Y, .03, BABYLON.Space.WORLD);
-					    }
-			
-					    if((x == 1 && y == 0) || (x == -1 && y == 0)){
-					  
-					    			if(!anim_start){
-					    				play_run_stop  = true;
-					    			//getAnim('idle',scene.animationGroups).play(true);
-					    			}
-					    		}
-
-
-
-					    if(y == -1  || inputMap["w"] || inputMap["ArrowUp"]){
- 				   	hitbox.physicsImpostor.setLinearVelocity(sphere.forward.scaleInPlace(3));
-		
 	
-					   }  else  if(y == 1 || inputMap["s"] || inputMap["ArrowDown"]){
-			
-					  	hitbox.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(-xx,0,-z));
-
-					    } 
-
-					     else {
-				
+ camera.attachControl(canvas, true);
+*/
 
 
-					     		console.log('setting to zero!');
-
-					 	hitbox.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(0,0,0));
-					 	 hitbox.physicsImpostor.setAngularVelocity(new BABYLON.Vector3(0,0,0));
-
-					        }
-
-			}
-}
-}
-
-var sphere;
-var hitbox;
-var anim_start = false;
-var play_run_stop = false;
-var run_stop_buffer_steps = 10;
-var run_stop_buffer_current_steps = 0;
-      BABYLON.SceneLoader.ImportMesh("","./assets/players/starman/", "starmangood.glb", scene, function (meshes,particles,skeletons, animations)  {
-      	
-    	
- 	
-
-  
-      			getAnim('idle',scene.animationGroups).play(true);
-  
-    			sphere = meshes[0];
-
-    			 sphere.ellipsoid = new BABYLON.Vector3(1, 3, 2);
-        sphere.ellipsoidOffset = new BABYLON.Vector3(0, 0, 0);
-
-      //sphere.rotate(BABYLON.Axis.Y, -1.57, BABYLON.Space.WORLD);
-
-
-      			sphere.scaling.x = 	sphere.scaling.y = 	sphere.scaling.z = .1;
-
-      			//sphere.scalingDeterminant(.2);
-    sphere.position.y = .5;
-    sphere.position.x = 3;
-    sphere.rotation.z = .9;
-  		//sphere.speed = new BABYLON.Vector3(0, 0, 0.08);
-
- // sphere.physicsImpostor = new BABYLON.PhysicsImpostor(sphere, BABYLON.PhysicsImpostor.SphereImpostor, {  friction: 5, mass: 20, restitution: 0 }, scene);
-  	
-  
-sphere.checkCollisions = true;
-
-  		//  	sphere.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(0,0,0));
-  		//  sphere.physicsImpostor.setAngularVelocity(new BABYLON.Vector3(0,0,0));
-
-  		  camera.lockedTarget = sphere; // target any mesh or object with a "position" Vector3
-
-   
-        sphere.rotationQuaternion.x = 0;  sphere.rotationQuaternion.z = 0;
-        // Add colliders
-        var bodyVisible = true;
-        hitbox = BABYLON.MeshBuilder.CreateBox("hitbox", {width: 0.2,height: .6, depth: .2}, scene);
-        hitbox.position.y =.5;
-        hitbox.position.x = 3;
-        hitbox.isVisible = false;
-        console.log(shadowGenerator);
-	shadowGenerator.addShadowCaster(sphere);
-    			shadowGenerator.getShadowMap().renderList.push(sphere);
-    			 light0.includedOnlyMeshes.push(sphere);
-        // Create a compoundBody and add all children
-    
-
-       // sphere.position.y=.5;
-
-        // Enable physics on colliders first then physics root of the mesh
-    
-        hitbox.physicsImpostor = new BABYLON.PhysicsImpostor(hitbox, BABYLON.PhysicsImpostor.SphereImpostor, { mass: 30,restitution: 0 }, scene);
-            hitbox.addChild(sphere);
-       // osphere.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(0,0,0))
-       // osphere.physicsImpostor.setAngularVelocity(new BABYLON.Vector3(0,0,0));
-        // Orient the compoundBody
-    
-
-
-    scene.onBeforeRenderObservable.add(()=>{
-
-						if(typeof hitbox != 'undefined'){
-						 if(true){
-
-						  hitbox.rotationQuaternion.x = 0;  hitbox.rotationQuaternion.z = 0;
-						 	 hitbox.rotationQuaternion.y = 0;
-						 	  sphere.rotationQuaternion.x = 0;
-							 sphere.rotationQuaternion.z = 0;
-
-        		    camera.position.x = hitbox.position.x + 0;
-					    camera.position.y = hitbox.position.y + 6;
-					 camera.position.z = hitbox.position.z - 3;
-					 	 
-
- 	if( inputMap["w"] || inputMap["ArrowUp"] || inputMap["a"] || inputMap["ArrowLeft"] || inputMap["d"] || inputMap["ArrowRight"] || inputMap["s"] || inputMap["ArrowDown"]){
- 						player_moving = true;
- 						current_game_xy = {x:0,y:0};
- 					} else {
- 					player_moving = false;
- 					   current_game_xy = {x:0,y:0};
- 					}
-				
-					if(player_moving){
-						
-						if(anim_start){
-						getAnim('idle',scene.animationGroups).stop();
-					     getAnim('running',scene.animationGroups).play(true);
-						console.log('play running')
-						anim_start = true;
-					}
-						moveplayer(current_game_xy.x,current_game_xy.y)
-					} else {
-						hitbox.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(0,0,0));
-					 	 hitbox.physicsImpostor.setAngularVelocity(new BABYLON.Vector3(0,0,0));
-						if(play_run_stop){
-						if(!anim_start){
-						getAnim('running',scene.animationGroups).stop();
-					     getAnim('running_stop',scene.animationGroups).play(true);
-					     anim_start = true;
-					 	}
-
-					 		if(run_stop_buffer_current_steps < run_stop_buffer_steps){
-							run_stop_buffer_current_steps++;
-						} else if(run_stop_buffer_current_steps == run_stop_buffer_steps) {
-							run_stop_buffer_current_steps = 0;
-							play_run_stop = false;
-
-						}
-
-					 	} else {
-					 	 getAnim('running_stop',scene.animationGroups).stop();
-					     getAnim('idle',scene.animationGroups).play(true);
-					     anim_start = true;	
-					 	}
-					}
-				
-
-
-
-					 
-					   
-
-							
-					
-				
-}
-}
-    })
-
-
-
-
-
-
-       });
-
-
-
-    // Camera
     var camera = new BABYLON.FollowCamera("FollowCam", new BABYLON.Vector3(0, 10, -10), scene);
-
-
-
     camera.radius = 1; // how far from the object to follow
     camera.heightOffset = 3; // how high above the object to place the camera
 
     camera.cameraAcceleration = 0; // how fast to move
     camera.maxCameraSpeed = 20; // speed limit
-    camera.attachControl(canvas, true);
-    //camera.target = player;
+   
+
   
     scene.activeCamera = camera;
+
+     camera.attachControl(canvas, false);
 
 	var distance = 10;	
 	var aspect = scene.getEngine().getRenderingCanvasClientRect().height / scene.getEngine().getRenderingCanvasClientRect().width; 
 	
-
-
-
-
     camera.attachControl(canvas, false);
      var light0 = new BABYLON.PointLight("Omni0", new BABYLON.Vector3(3, .5, 1.5), scene);
     var light1 = new BABYLON.PointLight("Omni1", new BABYLON.Vector3(0, .5, 1.5), scene);
@@ -408,23 +134,12 @@ sphere.checkCollisions = true;
     light2.diffuse = new BABYLON.Color3(0, 0, 1);
     light2.specular = new BABYLON.Color3(0, 0, 1);
 
-    	var shadowGenerator = new BABYLON.ShadowGenerator(1024, light0);
-	
+    var shadowGenerator = new BABYLON.ShadowGenerator(1024, light0);
 	shadowGenerator.useExponentialShadowMap = true;
-
-   // var light3 = new BABYLON.DirectionalLight("Dir0", new BABYLON.Vector3(4, 1, 0), scene);
-
 
     var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
     //engine.enableOfflineSuppourt = false;
-/*
-sphereImpostor.registerOnPhysicsCollide(groundImpostor, function(main, collided) {
-    main.object.material.diffuseColor = new BABYLON.Color3(Math.random(), Math.random(), Math.random());
-});*/
 
-
-
-   //camera.lockedTarget = sphere;
  
 
 
@@ -432,8 +147,8 @@ sphereImpostor.registerOnPhysicsCollide(groundImpostor, function(main, collided)
  
 
   		meshes.forEach(function(mesh,index){
-  			//console.log(mesh.name);
-mesh.checkCollisions = true;
+
+				mesh.checkCollisions = true;
 
   		if(mesh.name != 'player'){
   		mesh.physicsImpostor = new BABYLON.PhysicsImpostor(mesh, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.9 }, scene);
@@ -449,14 +164,61 @@ mesh.checkCollisions = true;
         
     });
 
-    	
+
+ 
+
+
+var cylinder = BABYLON.MeshBuilder.CreateCylinder("playerhitbox", {height: .5, diameter: .2}, scene);
+    cylinder.position = new BABYLON.Vector3(1, .5, 0);
+var playersesnor =  BABYLON.MeshBuilder.CreateSphere("sesnor", { diameter: .3}, scene);
+    playersesnor.position = new BABYLON.Vector3(0, .5, .1);
+var cylinder2 = BABYLON.MeshBuilder.CreateCylinder("test", {height: .8, diameter: .5}, scene);
+    cylinder2.position = new BABYLON.Vector3(.5, 1, 0);
+    scene.test = cylinder2;
+var player = new PlayerObject();
+//player.setCameraOnPlayer(false);
+Promise.all([
+      BABYLON.SceneLoader.ImportMesh(null,"./assets/players/starman/", "starmangoodtest.glb", scene, function (meshes,particles,skeltons)  {
+ 		player.setScene(scene);
+ 		player.setCamera(camera)
+
+
+ 		player.setModel(meshes);
+console.log(meshes)
+
+
+	meshes.forEach(function(mesh,index){
+
+	console.log(mesh.name);
+ 	
+	if(mesh.name == '__root__') {
+	
+	mesh.parent = cylinder;
+	playersesnor.parent = cylinder;
+ cylinder.physicsImpostor =  new BABYLON.PhysicsImpostor(cylinder, BABYLON.PhysicsImpostor.CylinderImpostor, { damping: 100, friction: 5, mass: 10, restitution: 0,  }, scene);
+  
+  	cylinder.isVisible = false;
+   		//mesh.position.y = .5;
+		//mesh.position.x = 5;
+	}
+
+ 		});
 
 
 
 
-  		
-    //sphere.physicsImpostor.setVelocity()
-    // Keyboard events
+ player.setHitBox(cylinder);
+
+	player.setMovementMode('keyboard');
+
+    }),
+
+]).then(() => {
+
+});
+
+
+
     var inputMap ={};
     scene.actionManager = new BABYLON.ActionManager(scene);
     scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyDownTrigger, function (evt) {								
@@ -466,17 +228,20 @@ mesh.checkCollisions = true;
         inputMap[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
     }));
 
+    player.addcontrols(inputMap);
+
+
     // Game/Render loop
     scene.onBeforeRenderObservable.add(()=>{
 
 	
-
+    	player.update();
      
        
 
     })
 
-camera.collisionRadius = new BABYLON.Vector3(10, 10, 10)
+
 
     return scene;
 
