@@ -1,0 +1,98 @@
+
+ul.fear-invetory-list
+{
+  list-style: none;
+  margin-left: -50px;
+  width: 800px;
+  display: grid;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+  
+  grid-template-columns: 200px 200px 200px;
+}
+ul.fear-invetory-list li
+{
+  width: 200px;
+  height: 80px;
+  border: 1px solid #595859;
+ opacity: .8;
+ transition: opacity .5s;
+  background-image: url('/games/divinestar/assets/UI/inventory/fear/fearinventoryitembg.png');
+
+}
+ul.fear-invetory-list li:hover
+{
+ opacity: 1;
+border: 1px solid gold;
+ transition: opacity .5s;
+ z-index: 1000;
+}
+        #fear-type-inventory-menu{
+          position: absolute;
+        
+          top:20px;
+          display: none;
+          width: 600px;
+          height: 80%;
+          padding-left: 20px;
+          background-color:   rgb(26, 0, 26,.95);
+          border-radius: 15px;
+          border: 1px solid var(--dspurple);
+        }
+
+         #fear-type-inventory-menu.show{
+          display: block;
+        }
+.fear-invetory-list-item-image
+{
+  width: 75px;
+  height: 75px;
+
+  margin-top: 2px;
+ 
+}
+.fear-invetory-list-item-image img {
+  width: 74px;
+  height: 74px;
+}
+.fear-inventory-list-item-info
+{
+  vertical-align: top;
+color: white;
+  margin-top: 2px;
+  padding: 1px;
+  font-size: 12px;
+}
+.fear-inventory-list-item-info strong{
+  font-size: 14px;
+}
+
+.iventory-item-grid{
+   display: grid;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+
+  grid-template-columns: 75px 125px;
+}
+
+.inventory-amount
+{
+color: white;
+    vertical-align: bottom;
+
+    position: absolute;
+    margin-left: 100px;
+    margin-top: 29px;
+
+    padding: 5px;
+    font-size: 15px;
+}
+.fear-types-7thoctavepurple
+{
+  background-image: url('/games/divinestar/assets/UI/inventory/fear/fearorbs/purpleorb1.png');
+}
+
+/*Fear Orbs*/
+
+
+

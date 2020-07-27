@@ -3,6 +3,7 @@
 <head>
 <script src="/games/divinestar/babylon/babylon.js"></script>
 <script src="/games/divinestar/js/cannon.js"></script>
+<script src="/games/divinestar/js/functions.js"></script>
 <script src="https://cdn.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
 <script src="/games/divinestar/babylon/loaders/babylonjs.loaders.min.js"></script>
 <script src="/games/divinestar/babylon/materialsLibrary/babylonjs.materials.min.js"></script>
@@ -11,7 +12,34 @@
 <script src="/games/divinestar/babylon/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
 <script src="/games/divinestar/babylon/serializers/babylonjs.serializers.min.js"></script>
 <script src="/games/divinestar/babylon//nodeEditor/babylon.nodeEditor.js"></script>
+<link rel="stylesheet" type="text/css" href="/games/divinestar/css/fearinventory.css">
 <style>
+:root {
+    --red: #ce0604;
+    --orange: #ff6600;
+    --yellow: #ffff00;
+    --green: #009933;
+    --blue: #0052cc;
+    --indigo: #9a00ce;
+    --violet: #f080ff;
+    --darkred: #990000;
+    --darkblue: #000080;
+    --dspurple: #8031bc;
+    --dsbgcolor: #1f1f24;
+    --dsnavcolor: #2d2e39;
+    
+}
+
+
+
+h1.dsfont1 {
+font-family: Luminari, Arial, sans-serif;
+font-weight:normal;
+font-style:normal;
+color: var(--dspurple);
+text-align: center;
+}
+
         html, body {
             overflow: hidden;
             width   : 100%;
@@ -26,6 +54,12 @@
     
             touch-action: none;
         }
+
+
+
+
+
+
         #menu {
         	position: absolute;
         	left: 10px;
@@ -34,7 +68,7 @@
         	width: 500px;
         	height: 500px;
         	padding-left: 20px;
-        	background-color: rgb(0,0,0,.5);
+        	background-color: 	rgb(26, 0, 26,.5);
         }
         #menu h1 {
         	color: green;
@@ -46,33 +80,547 @@
         	height:50px; width:50px;
         	border:2px solid black;
         }
+
+      
+        #message {
+        	opacity: 0;
+        	transition: 1s opacity;
+        	position: absolute;
+        	top: 77%;
+        	/*left: 30%;*/
+        	left: 0;
+        	right: 0;
+        
+    		text-align: center;
+    		margin-left: auto;
+    		margin-right: auto;
+        }
+        #message.show {
+        
+        	opacity: 1;
+        	transition: 1s opacity;
+
+        }
+        #message .message-container {
+        	height: 50px;
+        	line-height: 20px;
+        	width: 50%;
+
+
+        	text-align: center;
+    		margin-left: auto;
+    		margin-right: auto;
+    		margin-top: auto;
+    		border: 1px solid var(--dspurple);
+    		border-radius: 20px;
+            background-color: 	rgb(26, 0, 26,.9);
+        	color: white;
+             font-family: Luminari, Arial, sans-serif;
+        }
+   		.babylonUnmuteIcon {
+   			background-color: var(--dspurple) !important;
+   			border-radius: 15px;
+   		}
+		#fear-bar-container {
+		margin-left: 5px;
+		width: 300px;
+		background-color: inherit;
+		border: 1px solid red;
+		border-radius: 15px;
+		}
+
+		#fear-bar {
+		width: 0%;
+		height: 15px;
+		border-radius: 15px;
+		background-color: red;
+		}
+		.flex-row
+		{
+		margin: 0;
+		padding: 5px;
+		width: 100%;
+	
+		}
+		.flex-row .flex-col
+		{
+
+		  	align-items: center;
+  			justify-content: center;
+			display: inline-flex;
+		}
+		.icon-group
+		{
+			opacity: .6;
+			transition: 1s opacity;
+			padding: 2px;
+			border-radius: 15px;
+			background-color: rgb(34, 0, 34,.9);
+		
+		}
+			.icon-group.active
+		{
+			opacity: 1;
+			transition: 1s opacity;
+
+		}
+
+
+		.hud-icon {
+  position: relative;
+  display: inline-block;
+}
+
+.hud-icon .tooltiptext {
+  visibility: hidden;
+  display: none;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  top: -40px;
+  left: -45px;
+}
+
+.hud-icon .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: black transparent transparent transparent;
+}
+
+.hud-icon:hover .tooltiptext {
+  visibility: visible;
+  display: block;
+}
+.player-hud-spacer
+{
+width: 40px;
+}
+
+#fear-types-total
+{
+ color: red;
+}
+#fear-types
+{
+	border: 1px solid red;
+width: 55px;
+}
+#crystals-display
+{
+	border: 1px solid var(--dspurple);	
+	width:120px;
+  margin-left: -5px;
+}
+
+#player-hud-top-bar{
+	height: 30px;
+}
+#player-info-display
+{
+	width: 450px;
+}
+
+#prompt-count-down
+{
+		opacity: 0;
+        	transition: 1s opacity;
+        	position: absolute;
+        	top: 72%;
+        	/*left: 30%;*/
+        	left: 0;
+        	right: 0;
+        	width: 300px;
+    		text-align: center;
+    		margin-left: auto;
+    		margin-right: auto;
+    		border-radius: 15px;
+    		background-color: rgb(34, 0, 34,.9);
+}
+#prompt-count-down.show
+{
+		opacity: 1;
+        transition: 1s opacity;
+
+}
+
+#prompt-count-bar-containerr {
+width: 300px;
+background-color: inherit;
+border: 1px solid rgb(34, 0, 34,.9);
+border-radius: 15px;
+}
+
+#prompt-count-bar {
+
+height: 15px;
+border-radius: 15px;
+background-color: var(--dspurple);
+}
+
+button.player-hud-button
+{
+  border: none;
+  padding: 0px;
+
+  margin-right: 20px;
+  background-color: inherit;
+}
+
+
+
+
+
+
+
+  #player-hud {
+          border-top-left-radius: 30px;
+          border-top-right-radius: 30px;
+          border-top: 3px solid var(--dspurple);
+          width: 100%;
+          height: 160px;
+          display: flex;
+          position: absolute;
+          top: 85%;
+          left: 0;
+          background-color:   rgb(26, 0, 26,.9);
+          color: var(--dspurple);
+          font-family: Luminari, Arial, sans-serif;
+        }
+
+  #team-battle-bar {
+          border-top-left-radius: 30px;
+          border-top-right-radius: 30px;
+          border-top: 3px solid var(--dspurple);
+          width: 100%;
+          height: 160px;
+          display: flex;
+          position: absolute;
+          top: 100%;
+          left: 0;
+          background-color:   rgb(26, 0, 26,.9);
+          color: var(--dspurple);
+          font-family: Luminari, Arial, sans-serif;
+        }
+
+.team-bar{
+   display: grid;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+
+  grid-template-columns: 50px 125px 125px 125px 125px;
+}
+.team-bar-member
+{
+ text-align: center;
+ color: white; 
+ margin-left: 50px;
+}
+.team-bar-member img {
+  padding: 0px;
+  margin: 0;
+  width: 50px;
+  height: 50px;
+}
+.team-member-name
+{
+  margin-top: -10px;
+}
+.team-member-health-container
+{
+  margin-top: -10px;
+}
+.team-member-mana-container
+{
+    margin-top: -10px;
+}
+.team-member-health-label 
+{
+margin-top: 75px;
+margin-left: 24px;
+color: var(--green);
+}
+.team-member-mana-label
+{
+margin-top: -12px;
+margin-left: 24px;
+color: var(--violet);
+}
+
+
+.team-battle-bar-grid
+{
+     display: grid;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+
+  grid-template-columns: 600px 500px;
+}
+.battle-options-grid {
+      display: grid;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+
+  grid-template-columns: 150px 150px; 
+}
+.battle-option
+{
+  width: 148px;
+  height: 65px;
+  color: white;
+  text-align: center;
+  vertical-align: center;
+  border: 2px solid var(--dspurple);
+background-image: linear-gradient(to bottom right,#1a1a1a,var(--dspurple), #1a1a1a);
+}
+
+.battle-option p
+{
+margin-top: 25px;
+
+}
+.team-member-data-label
+{
+
+}
     </style>
+
+
+
 </head>
 <body>
+<div id='team-battle-bar'>
+  <div class='team-battle-bar-grid'>
+      <div class='team-bar'>
+               <div class='team-member-data-label'>
+                  <p class='team-member-health-label'>Health:</p>
+                  <p class='team-member-mana-label'>Mana:</p>
+               </div>
+        <div class='team-bar-member'>
+              <img src='/games/divinestar/assets/UI/players/purplestar.png'/>
+              <p class='team-member-name'>Eiael</p>
+              <p class='team-member-health-container'><span id='team-member-1-currenthealth'>55</span>&nbsp;/&nbsp;<span id='team-member-1-totalhealth'>150</span></p>
+              <p class='team-member-mana-container'><span id='team-member-1-currentmana'>20</span>&nbsp;/&nbsp;<span id='team-member-1-currentmana'>99</span></p>
+       
+        </div>
+         <div class='team-bar-member'>
+            <img src='/games/divinestar/assets/UI/players/purplestar.png'/>
+              <p class='team-member-name'>Eiael</p>
+              <p class='team-member-health-container'><span id='team-member-2-currenthealth'>55</span>&nbsp;/&nbsp;<span id='team-member-2-totalhealth'>150</span></p>
+              <p class='team-member-mana-container'><span id='team-member-2-currentmana'>20</span>&nbsp;/&nbsp;<span id='team-member-2-currentmana'>99</span></p>
+       
+        </div>
+         <div class='team-bar-member'>
+     <img src='/games/divinestar/assets/UI/players/purplestar.png'/>
+              <p class='team-member-name'>Eiael</p>
+              <p class='team-member-health-container'><span id='team-member-3-currenthealth'>55</span>&nbsp;/&nbsp;<span id='team-member-3-totalhealth'>150</span></p>
+              <p class='team-member-mana-container'><span id='team-member-3-currentmana'>20</span>&nbsp;/&nbsp;<span id='team-member-3-currentmana'>99</span></p>
+       
+        </div>
+         <div class='team-bar-member'>
+             <img src='/games/divinestar/assets/UI/players/purplestar.png'/>
+              <p class='team-member-name'>Eiael</p>
+              <p class='team-member-health-container'><span id='team-member-4-currenthealth'>55</span>&nbsp;/&nbsp;<span id='team-member-4-totalhealth'>150</span></p>
+              <p class='team-member-mana-container'><span id='team-member-4-currentmana'>20</span>&nbsp;/&nbsp;<span id='team-member-4-currentmana'>99</span></p>
+       
+        </div>
+      </div>
+
+      <div class='battle-options-container'>
+        <div class='battle-options-grid'>
+            <div class='battle-option'><p class='option-text'>Use Weapon</p></div>
+            <div class='battle-option'><p class='option-text'>Cast Spell</p></div>
+            <div class='battle-option'><p class='option-text'>Summons</p></div>
+            <div class='battle-option'><p class='option-text'>Use Item</p></div>
+        </div>
+      </div>
+
+
+</div>
+
+</div>
+
+<div id='fear-type-inventory-menu'>
+<h1 class='dsfont1'>Fear Inventory</h1>
+<ul id='fear-type-inventory-list' class='fear-invetory-list'>
+<li data-slot="1"></li>
+<li data-slot="2"></li>
+<li data-slot="3"></li>
+<li data-slot="4"></li>
+<li data-slot="5"></li>
+<li data-slot="6"></li>
+<li data-slot="7"></li>
+<li data-slot="8"></li>
+<li data-slot="9"></li>
+<li data-slot="10"></li>
+<li data-slot="11"></li>
+<li data-slot="12"></li>
+<li data-slot="13"></li>
+<li data-slot="14"></li>
+<li data-slot="15"></li>
+<li data-slot="16"></li>
+<li data-slot="17"></li>
+<li data-slot="18"></li>
+<li data-slot="19"></li>
+<li data-slot="20"></li>
+<li data-slot="21"></li>
+</ul>
+
+</div>
+
+
 	<div id='menu'>
 		<h1>Hello</h1>
 		<p>This is some menu text.</p>
 		<div class='box'>
 		</div>
 	</div>
+	<div id='prompt-count-down'>
+	<div id="prompt-count-bar-container">
+						<div data-width='0' id="prompt-count-bar"></div>
+		</div>
+	</div>
+	<div class='' id='message'>
+		<div class='message-container'>
+		<p id='message-text'>Hello from DivineStar.</p>
+		</div>
+	</div>
+
+<div class='flex' id='player-hud'>
+		
+
+
+		<div id='player-info-display'>
+		<div class='flex-row' id='player-hud-top-bar'>
+
+
+			<div class='flex-col'>
+				<div class='flex-col  player-hud-spacer'></div>
+				<div id='fear-types' class='icon-group'>
+					<div class='hud-icon flex-col' >
+						<span class="tooltiptext">Tooltip text</span>
+						<img src='/games/divinestar/assets/UI/icons/playerhud/fear_icon.png'/>
+					</div>
+					<div class='flex-col'>
+						<span id='fear-types-total'>0</span>
+					</div>
+				</div>
+				<div class='flex-col'>
+					<div id="fear-bar-container">
+						<div data-width='0' id="fear-bar"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+			<div id='player-hud-second-bar' class='flex-row'>
+
+				<div class='flex-col player-hud-spacer'>
+				</div>
+				<div class='flex-col'>
+					<div id='crystals-display'class='icon-group'>
+						<div class='hud-icon flex-col'>
+							<span class="tooltiptext">Tooltip text</span>
+							<img src='/games/divinestar/assets/UI/icons/playerhud/crystal_icon.png'/>
+						</div>
+						<div class='flex-col'>
+							<span id='cystals-display-total'>0</span>
+						</div>
+					</div>
+
+				</div>
+			<div class='flex-row' id='player-hud-third-bar'>
+            <div class='flex-col player-hud-spacer'>
+        </div>
+			<div class='flex-col '>
+					<div class='hud-icon' >
+						<span class="tooltiptext">Tooltip text</span>
+						<button class='player-hud-button' id='fear-invetory-player-hud'>
+						<img src='/games/divinestar/assets/UI/icons/playerhud/fear_inventory_icon.png'/>
+						</button>
+					</div>
+			</div>
+			<div class='flex-col '>
+					<div class='hud-icon' >
+						<span class="tooltiptext">Tooltip text</span>
+            <button class='player-hud-button' id='invetory-player-hud'>
+						<img src='/games/divinestar/assets/UI/icons/playerhud/fear_inventory_icon.png'/>
+          </button>
+					</div>
+			</div>
+			<div class='flex-col '>
+					<div class='hud-icon' >
+						<span class="tooltiptext">Tooltip text</span>
+            <button class='player-hud-button' id='settings-player-hud'>
+						<img src='/games/divinestar/assets/UI/icons/playerhud/fear_inventory_icon.png'/>
+            </button>
+					</div>
+			</div>
+			</div>
+			</div>
+
+		</div>
+
+		<div  id='team-info-display'>
+			<div class='flex-row'>
+
+				<div class='flex-col'>
+							<img src='/games/divinestar/assets/UI/players/purplestar.png'/>
+							<p>Eiael</p>
+				</div>
+			</div>
+
+		</div>
+
+
+			</div>
+
+
+		</div>
+	</div>
+
+
+
+
+
+
     <canvas id="renderCanvas"></canvas>
     <script type='module'>
-
-import {PlayerObject} from './js/PlayerObject.js'
-import {PlayerSesnor} from './js/PlayerSesnor.js'
-
-
-
-var createPhysicsImpostor = function(scene, entity, impostor, options, reparent) {
-    if (entity == null) return;
-    entity.checkCollisions = false;
-    const parent = entity.parent;
-    if (reparent === true) entity.parent = null;
-    entity.physicsImpostor = new BABYLON.PhysicsImpostor(entity, impostor, options, scene);
-    if (reparent === true) entity.parent = parent;
-};
+import {AssetManager} from './js/AssetManager.js'
+import {SceneManager} from './js/SceneManager.js'
+import {PlayerObject} from './js/player/PlayerObject.js'
+import {TeamObject} from './js/Team/TeamObject.js'
+import {Messages} from './js/UI/Messages.js'
+import {PlayerHUD} from './js/UI/PlayerHUD.js'
+import {TeamData} from './js/Data/TeamData.js'
+import {FearTypes} from './js/Fear/FearTypes.js'
+import {DataManager} from './js/Data/DataManager.js';
+//import {PlayerSesnor} from './js/player/PlayerSensor.js'
 
 
+
+
+  var sceneManager = new SceneManager();
+var dataManager = new DataManager();
+console.log(dataManager.get_data_value('fearscenes','scene1'))
+
+var messages = new Messages();
+var playerhud = new PlayerHUD();
+var teamdata = new TeamData();
+playerhud.set_data_manager(dataManager);
+teamdata.set_player_hud(playerhud);
+sceneManager.set_player_hud(playerhud);
+messages.showAndHideMessage('Hello from Divine Star');
 
         window.addEventListener('DOMContentLoaded', function(){
             // get the canvas DOM element
@@ -84,15 +632,24 @@ var createPhysicsImpostor = function(scene, entity, impostor, options, reparent)
 
 
 var createScene = function () {
+
+
+	//var sensor = new PlayerSesnor();
+	//sensor.callMe();
     // Setup the scene
     var scene = new BABYLON.Scene(engine);
-  	scene.debugLayer.show();
+ //	scene.debugLayer.show();
 
     var gravityVector = new BABYLON.Vector3(0,-9.8, 0);
 	var physicsPlugin = new BABYLON.CannonJSPlugin();
 	scene.enablePhysics(gravityVector, physicsPlugin);
     scene.collisionsEnabled = true;
 
+window.addEventListener("click", function () {
+   // We try to pick an object
+   var pickResult = scene.pick(scene.pointerX, scene.pointerY);
+   console.log(pickResult);
+});
 	
 /*
     var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 5, -10), scene);
@@ -109,17 +666,17 @@ var createScene = function () {
 
     camera.cameraAcceleration = 0; // how fast to move
     camera.maxCameraSpeed = 20; // speed limit
-   
+     scene.activeCamera = camera;
 
+//var blackandwhite = new BABYLON.BlackAndWhitePostProcess("bandw", 1, camera);
+//console.log(blackandwhite.degree = .4);
+ //new BABYLON.FxaaPostProcess("fxaa", 1.0, camera);
   
-    scene.activeCamera = camera;
 
      camera.attachControl(canvas, false);
 
-	var distance = 10;	
-	var aspect = scene.getEngine().getRenderingCanvasClientRect().height / scene.getEngine().getRenderingCanvasClientRect().width; 
-	
-    camera.attachControl(canvas, false);
+
+    /*
      var light0 = new BABYLON.PointLight("Omni0", new BABYLON.Vector3(3, .5, 1.5), scene);
     var light1 = new BABYLON.PointLight("Omni1", new BABYLON.Vector3(0, .5, 1.5), scene);
     var light2 = new BABYLON.PointLight("Omni2", new BABYLON.Vector3(5.5, 1, 0), scene);
@@ -134,14 +691,15 @@ var createScene = function () {
     light2.diffuse = new BABYLON.Color3(0, 0, 1);
     light2.specular = new BABYLON.Color3(0, 0, 1);
 
-    var shadowGenerator = new BABYLON.ShadowGenerator(1024, light0);
-	shadowGenerator.useExponentialShadowMap = true;
 
+*/
     var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
     //engine.enableOfflineSuppourt = false;
 
  
 
+
+   
 
     BABYLON.SceneLoader.ImportMesh("","./assets/", "level.babylon", scene, function (meshes,particles,skeltons) {
  
@@ -152,7 +710,8 @@ var createScene = function () {
 
   		if(mesh.name != 'player'){
   		mesh.physicsImpostor = new BABYLON.PhysicsImpostor(mesh, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.9 }, scene);
-  	
+        mesh.physicsImpostor.physicsBody.collisionFilterGroup = 1| 2;
+        console.log(mesh.physicsImpostor.physicsBody.collisionFilterGroup );
   		}
 
   		
@@ -166,16 +725,45 @@ var createScene = function () {
 
 
  
+    var inputMap ={};
+    scene.actionManager = new BABYLON.ActionManager(scene);
+    scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyDownTrigger, function (evt) {								
+        inputMap[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
+    }));
+    scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyUpTrigger, function (evt) {								
+        inputMap[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
+    }));
+ 
 
 
-var cylinder = BABYLON.MeshBuilder.CreateCylinder("playerhitbox", {height: .5, diameter: .2}, scene);
-    cylinder.position = new BABYLON.Vector3(1, .5, 0);
-var playersesnor =  BABYLON.MeshBuilder.CreateSphere("sesnor", { diameter: .3}, scene);
-    playersesnor.position = new BABYLON.Vector3(0, .5, .1);
+
+
+
+  // Fountain object
+  var assettManager = new AssetManager();
+assettManager.set_scene(scene);
+assettManager.load_soudnds();
+
+var player = new PlayerObject();
+player.set_team_data(teamdata);
+scene.interactive_objects = new Array();
+
+
+
+
+ var fear_types = new FearTypes();
+fear_types.set_scene(scene);
+fear_types.set_player(player);
+fear_types.set_asset_manager(assettManager);
+fear_types.set_team_data(teamdata);
+player.set_scene_manager(sceneManager);
+fear_types.create(0,'fearorb',new BABYLON.Vector3(2, .6, 0),dataManager.get_data_value('fearorbtypes','7thoctavepurple'));
+console.log(dataManager.get_data_value('fearorbtypes','7thoctavepurple'));
 var cylinder2 = BABYLON.MeshBuilder.CreateCylinder("test", {height: .8, diameter: .5}, scene);
     cylinder2.position = new BABYLON.Vector3(.5, 1, 0);
     scene.test = cylinder2;
-var player = new PlayerObject();
+
+scene.interactive_objects.push(cylinder2);
 //player.setCameraOnPlayer(false);
 Promise.all([
       BABYLON.SceneLoader.ImportMesh(null,"./assets/players/starman/", "starmangoodtest.glb", scene, function (meshes,particles,skeltons)  {
@@ -184,32 +772,13 @@ Promise.all([
 
 
  		player.setModel(meshes);
-console.log(meshes)
 
 
-	meshes.forEach(function(mesh,index){
-
-	console.log(mesh.name);
- 	
-	if(mesh.name == '__root__') {
-	
-	mesh.parent = cylinder;
-	playersesnor.parent = cylinder;
- cylinder.physicsImpostor =  new BABYLON.PhysicsImpostor(cylinder, BABYLON.PhysicsImpostor.CylinderImpostor, { damping: 100, friction: 5, mass: 10, restitution: 0,  }, scene);
-  
-  	cylinder.isVisible = false;
-   		//mesh.position.y = .5;
-		//mesh.position.x = 5;
-	}
-
- 		});
-
-
-
-
- player.setHitBox(cylinder);
+    player.addcontrols(inputMap);
 
 	player.setMovementMode('keyboard');
+
+	player.setMessages(messages);
 
     }),
 
@@ -219,16 +788,9 @@ console.log(meshes)
 
 
 
-    var inputMap ={};
-    scene.actionManager = new BABYLON.ActionManager(scene);
-    scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyDownTrigger, function (evt) {								
-        inputMap[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
-    }));
-    scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyUpTrigger, function (evt) {								
-        inputMap[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
-    }));
 
-    player.addcontrols(inputMap);
+
+
 
 
     // Game/Render loop
@@ -236,10 +798,18 @@ console.log(meshes)
 
 	
     	player.update();
-     
-       
-
+  
     })
+
+
+    scene.onBeforePhysicsObservable.add(function() {
+     
+     if(player.isReady()){
+ fear_types.physicsupdate();
+ }
+
+    });
+
 
 
 
@@ -248,12 +818,161 @@ console.log(meshes)
 };
 
 
+
+
+
+var  createFearScene1 = function()
+{
+    var scene = new BABYLON.Scene(engine);
+ 	//scene.debugLayer.show();
+
+    var gravityVector = new BABYLON.Vector3(0,-9.8, 0);
+	var physicsPlugin = new BABYLON.CannonJSPlugin();
+	scene.enablePhysics(gravityVector, physicsPlugin);
+    scene.collisionsEnabled = true;
+   // var camera = new BABYLON.FollowCamera("FollowCam", new BABYLON.Vector3(0, 0, 0), scene);
+   var camera = new BABYLON.UniversalCamera("UniversalCamera", new BABYLON.Vector3(10, 8, 16), scene);
+        camera.attachControl(canvas, true);
+   // camera.radius = 10; // how far from the object to follow
+   // camera.heightOffset = 3; // how high above the object to place the camera
+
+   // camera.cameraAcceleration = 0; // how fast to move
+  //  camera.maxCameraSpeed = 20; // speed limit
+     scene.activeCamera = camera;
+   var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
+
+var player_position_mesh = false;
+ BABYLON.SceneLoader.ImportMesh("","./assets/spaces/fearspaces/fearspace1/", "fearspace1.glb", scene, function (meshes,particles,skeltons) {
+ 	
+
+
+  		meshes.forEach(function(mesh,index){
+  		
+
+		if(mesh.name == 'camera-look-at'){
+  			 camera.setTarget(mesh.position);
+camera.lockedTarget = mesh; 
+        //camera.rotation.z = 0;
+       //camera.rotation.x = 0;
+//camera.rotation.x = Math.PI / 180;
+//camera.rotation.z = Math.PI / 90;
+        // camera.cameraRotation( new BABYLON.Vector2(0, Math.PI / 90));
+  			mesh.isVisible = false;
+  			return;
+
+  		}
+  		if(mesh.name=='camera-position') {
+  			//camera.position = mesh.position;
+   
+
+  			camera.position.y = 8;
+  			camera.position.x =10;
+        //camera.rotation.y = Math.PI / 90;
+        camera.position.z =16;
+  			mesh.isVisible = false;
+  			return;
+  		}
+  		if(mesh.name =='player1-position'){
+  			mesh.isVisible = false;
+  			player_position_mesh = mesh;
+
+  			return;
+  		}
+  		if(mesh.name=='fear1-position'){
+  		   mesh.isVisible = false;
+  		   return;
+  		}
+
+
+
+
+  		if(mesh.name != 'player'){
+  		mesh.physicsImpostor = new BABYLON.PhysicsImpostor(mesh, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.9 }, scene);
+
+  		}
+
+  		
+
+
+  		});
+
+
+        
+    });
+var player_mesh = false;
+      BABYLON.SceneLoader.ImportMesh(null,"./assets/players/starman/", "starmangoodtest.glb", scene, function (meshes,particles,skeltons)  {
+      	 player_mesh = meshes[0];
+	player_mesh.scaling.x = 	player_mesh.scaling.y = 	player_mesh.scaling.z = .8;
+
+     	player_mesh.position = player_position_mesh.position;
+     //	player_mesh.position.z += 10;
+     player_mesh.position.x = -5;
+     player_mesh.position.z = 10;
+     player_mesh.rotation.y = -6.28319;
+     player_mesh.position.y = 1;
+         player_mesh.rotate(BABYLON.Axis.Y,3.3, BABYLON.Space.WORLD);
+      });
+
+      BABYLON.SceneLoader.ImportMesh(null,"./assets/feartypes/purplestar/", "purplestar.glb", scene, function (meshes,particles,skeltons)  {
+         var purple_star = meshes[0];
+  purple_star.scaling.x =   purple_star.scaling.y =   purple_star.scaling.z = .8;
+    console.log('loaded purple star');
+      //urple_star.position = player_position_mesh.position;
+     // player_mesh.position.z += 10;
+     purple_star.position.x = -5;
+     purple_star.position.z = 24;
+     purple_star.rotation.y = -6.28319;
+     purple_star.position.y = 1;
+         purple_star.rotate(BABYLON.Axis.Y,3.3, BABYLON.Space.WORLD);
+      });
+
+    // Game/Render loop
+    scene.onBeforeRenderObservable.add(()=>{
+
+    //	player.update();
+  
+    })
+
+
+    scene.onBeforePhysicsObservable.add(function() {
+     
+  
+   /* if(player.isReady()){
+ fear_types.physicsupdate();
+ }*/
+
+    });
+
+
+
+
+
+
+
+ 		return scene;
+}
+
+
+window.addEventListener('click',function(){
+//when you click the window the game will unmute
+  document.getElementById('babylonUnmuteIconBtn').click();
+});
+
+
             // call the createScene function
             var scene = createScene();
-
+           var fearscene1 = createFearScene1();
             // run the render loop
+
+      
+            sceneManager.add_scene('level','1',scene);
+            sceneManager.add_scene('fear','fearscene1',fearscene1);
+            sceneManager.set_active_scene('level','1')
+
             engine.runRenderLoop(function(){
-                scene.render();
+               // scene.render();
+                //fearscene1.render();
+                sceneManager.render_active_scene();
             });
 
             // the canvas/window resize event handler
