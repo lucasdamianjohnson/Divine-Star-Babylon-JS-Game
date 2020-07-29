@@ -17,6 +17,10 @@ export class TeamData
 
 	}
 
+	get_data_value(looking_for,index)
+	{
+	  return this.data[looking_for][index];
+	}
 
 	get_data(looking_for)
 	{

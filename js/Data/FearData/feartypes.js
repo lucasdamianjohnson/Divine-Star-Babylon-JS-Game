@@ -5,6 +5,7 @@ export var feartypes =
 	
 	"corruptedpurplecrystal" : {
 			'name' : 'corruptedpurplecrystal',
+			'displayname' : 'Corrupted Purple Crystal',
 			'Speed':1,
 			'Flexibility':1,
 			'Wisdom':1,
@@ -16,6 +17,14 @@ export var feartypes =
 			'current-health':20,
 			'current-mana':20,
 			'species': 'crystal',
-			'type' : 'purple'
+			'type' : 'purple',
+			'crystal-drop': {
+				'min' : 0,
+				'max' : 5
+			},
+			'exp': {
+				'min' : 4,
+				'max' : 6	
+			},
 		},
 }

@@ -68,9 +68,8 @@ on_asorb()
     this.sound_die.play();
     var orb = this;
     this.player.get_actions().set_action('fearscene',function(sceneManager,teamdata){
-        var scene = orb.orbdata['fearscene']
-        console.log(scene);
-       sceneManager.set_active_scene('fear',scene);
+   
+       sceneManager.set_active_scene('fear','',orb.orbdata);
       teamdata.cancel_fear_prompt(function(sceneManager){
    
             

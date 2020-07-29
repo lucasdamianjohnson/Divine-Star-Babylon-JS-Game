@@ -1,3 +1,11 @@
+ function getRandomNumber(min, max) {
+    return Math.floor( Math.random() * (max - min) + min);
+}
+
+
+
+
+
 function hasClass(element, class_name) {
     return (' ' + element.className + ' ').indexOf(' ' + class_name+ ' ') > -1;
 }

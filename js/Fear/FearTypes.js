@@ -1,15 +1,16 @@
 
 import {FearOrb} from './FearOrb.js'
+import {Fear} from './Fear.js'
+import {FearTurnGenerator} from './FearTurnGenerator.js'
 export class FearTypes
 {
 
 
 
-	constructor()
+	constructor(dataManager)
 	{
 		this.scene = false;
-		this.mesh = false;
-		this.sound = false;
+	
 		this.player = false;
 		this.teamdata = false;
 	
@@ -18,8 +19,22 @@ export class FearTypes
  	this.assets = false;
  	this.player_hud = false;
  	this.fear_scene_standby = false;
+ 	this.dataManager = dataManager;
+ 	this.turnGenerator = new FearTurnGenerator(dataManager);
 
 	}
+
+
+
+
+	get_turns(feartypes,currentteam)
+	{
+			return this.turnGenerator.get_turns(feartypes,currentteam);
+	}
+
+
+
+
 
 	set_player_hud(playerhud)
 	{
@@ -56,6 +71,7 @@ export class FearTypes
 	set_team_data(teamdata)
 	{
 		this.teamdata = teamdata;
+		this.turnGenerator.set_team_data(teamdata);
 	}
 
 	destroy(id,type)
@@ -64,8 +80,20 @@ export class FearTypes
 		delete this.objects[type+'-'+id];
 	}
 
+	create_fear(mesh,name)
+	{
+
+		var feardata = this.dataManager.get_data_value('feartypes',name);
+		return new Fear(mesh,feardata);
+	}
+
 	create(id,type,position,data1,data2){
 		var var_return = false;
+		if(type=='fear'){
+
+
+
+		}
 		if(type=='fearorb'){
 
 			var fearorb = new FearOrb(id,data1);

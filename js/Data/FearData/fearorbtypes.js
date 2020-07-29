@@ -8,7 +8,8 @@ export var fearorbtypes =
 			'orbtype':'7thoctavepurple',
 			'name' : '7th Ocatve Purple',
 			"inventoryclasss":"fear-types-7thoctavepurple",
-			"fearscene":"fearscene1",
+			"fearspace":"fearspace1",
+			"fearbattlesets" : ['1'],
 			"fearpower":1
 		
 		}

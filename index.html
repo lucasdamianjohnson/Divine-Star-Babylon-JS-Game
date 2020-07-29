@@ -121,6 +121,9 @@ text-align: center;
    			background-color: var(--dspurple) !important;
    			border-radius: 15px;
    		}
+
+
+
 		#fear-bar-container {
 		margin-left: 5px;
 		width: 300px;
@@ -304,7 +307,7 @@ button.player-hud-button
           border-top-right-radius: 30px;
           border-top: 3px solid var(--dspurple);
           width: 100%;
-          height: 160px;
+          height: 240px;
           display: flex;
           position: absolute;
           top: 100%;
@@ -365,7 +368,7 @@ color: var(--violet);
   grid-column-gap: 0px;
   grid-row-gap: 0px;
 
-  grid-template-columns: 600px 500px;
+  grid-template-columns: 600px 300px 450px;
 }
 .battle-options-grid {
       display: grid;
@@ -382,9 +385,23 @@ color: var(--violet);
   text-align: center;
   vertical-align: center;
   border: 2px solid var(--dspurple);
+  opacity: .4;
+  transition: opacity .5s;
 background-image: linear-gradient(to bottom right,#1a1a1a,var(--dspurple), #1a1a1a);
 }
-
+.battle-option.active
+{
+  z-index: 999;
+  opacity: 1;
+  transition: opacity .2s;
+}
+.battle-option.selected
+{
+  border: 2px solid gold;
+  z-index: 999;
+  opacity: 1;
+  transition: opacity .2s;
+}
 .battle-option p
 {
 margin-top: 25px;
@@ -394,6 +411,36 @@ margin-top: 25px;
 {
 
 }
+
+
+    .fear-type-healthbar-container {
+
+    width: 100px;
+    background-color: inherit;
+    border: 1px solid red;
+    border-radius: 15px;
+
+    }
+    .fear-type-healthbar{
+      width: 100%;
+    height: 6px;
+    border-radius: 15px;
+    background-color: red;   
+    }
+
+    .battle-fear-types-health-container {
+      color: white;
+      font-size: 12px;
+          margin-left: 20px;
+    }
+    .battle-fear-types-grid {
+      display: grid;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+
+  grid-template-columns: 150px 150px 150px; 
+
+    }
     </style>
 
 
@@ -402,7 +449,7 @@ margin-top: 25px;
 <body>
 <div id='team-battle-bar'>
   <div class='team-battle-bar-grid'>
-      <div class='team-bar'>
+      <div id='team-stats-battle-info-display' class='team-bar'>
                <div class='team-member-data-label'>
                   <p class='team-member-health-label'>Health:</p>
                   <p class='team-member-mana-label'>Mana:</p>
@@ -439,14 +486,35 @@ margin-top: 25px;
 
       <div class='battle-options-container'>
         <div class='battle-options-grid'>
-            <div class='battle-option'><p class='option-text'>Use Weapon</p></div>
-            <div class='battle-option'><p class='option-text'>Cast Spell</p></div>
-            <div class='battle-option'><p class='option-text'>Summons</p></div>
-            <div class='battle-option'><p class='option-text'>Use Item</p></div>
+            <div data-id='0' class='battle-option'><p class='option-text'>Use Force</p></div>
+            <div data-id='1' class='battle-option'><p class='option-text'>Cast Spell</p></div>
+            <div data-id='2' class='battle-option'><p class='option-text'>Summon</p></div>
+            <div data-id='3' class='battle-option'><p class='option-text'>Use Item</p></div>
+            <div data-id='4' class='battle-option'><p class='option-text'>Try To Flee</p></div>
+            <div data-id='5' class='battle-option'><p class='option-text'>Fear Type Stats</p></div>
         </div>
       </div>
 
+      <div class='battle-fear-types-health-container'>
+        <div id='fear-types-battle-info-display' class='battle-fear-types-grid'>
+            <div >
+              <p>Corrupted Purple Crystal</p>
+                
+                  <div class="fear-type-healthbar-container">
+                  <div data-width='0' data-id='0' class="fear-type-healthbar"></div>
+                  </div>
+             
+            </div>
+            <div>
+              
+            </div>
+            <div>
+              
+            </div>
+          
+        </div>
 
+      </div>
 </div>
 
 </div>
@@ -599,28 +667,40 @@ margin-top: 25px;
 import {AssetManager} from './js/AssetManager.js'
 import {SceneManager} from './js/SceneManager.js'
 import {PlayerObject} from './js/player/PlayerObject.js'
-import {TeamObject} from './js/Team/TeamObject.js'
 import {Messages} from './js/UI/Messages.js'
 import {PlayerHUD} from './js/UI/PlayerHUD.js'
 import {TeamData} from './js/Data/TeamData.js'
 import {FearTypes} from './js/Fear/FearTypes.js'
 import {DataManager} from './js/Data/DataManager.js';
+import {TeamObject} from './js/Team/TeamObject.js';
+import {BattleManager} from './js/Battles/BattleManager.js';
+import {BattleLoader} from './js/Battles/BattleLoader.js';
 //import {PlayerSesnor} from './js/player/PlayerSensor.js'
 
 
 
 
-  var sceneManager = new SceneManager();
-var dataManager = new DataManager();
-console.log(dataManager.get_data_value('fearscenes','scene1'))
 
+var dataManager = new DataManager();
+
+
+
+
+var teamdata = new TeamData();
+  var assettManager = new AssetManager(dataManager);
+  var sceneManager = new SceneManager(assettManager,dataManager,teamdata);
+var player = new PlayerObject();
 var messages = new Messages();
 var playerhud = new PlayerHUD();
-var teamdata = new TeamData();
+
+ var fear_types = new FearTypes(dataManager);
 playerhud.set_data_manager(dataManager);
 teamdata.set_player_hud(playerhud);
 sceneManager.set_player_hud(playerhud);
 messages.showAndHideMessage('Hello from Divine Star');
+var team = new TeamObject(teamdata,dataManager);
+var battleManager = new BattleManager();
+var battleLoader = new BattleLoader(sceneManager,dataManager,teamdata,battleManager,team,fear_types,playerhud);
 
         window.addEventListener('DOMContentLoaded', function(){
             // get the canvas DOM element
@@ -629,7 +709,8 @@ messages.showAndHideMessage('Hello from Divine Star');
             // load the 3D engine
             var engine = new BABYLON.Engine(canvas, true);
 
-
+            sceneManager.set_game_engine(engine);
+            sceneManager.set_game_canvas(canvas);
 
 var createScene = function () {
 
@@ -638,8 +719,8 @@ var createScene = function () {
 	//sensor.callMe();
     // Setup the scene
     var scene = new BABYLON.Scene(engine);
- //	scene.debugLayer.show();
-
+ 
+scene.clearColor = new BABYLON.Color3(0, 0, 0);
     var gravityVector = new BABYLON.Vector3(0,-9.8, 0);
 	var physicsPlugin = new BABYLON.CannonJSPlugin();
 	scene.enablePhysics(gravityVector, physicsPlugin);
@@ -647,8 +728,8 @@ var createScene = function () {
 
 window.addEventListener("click", function () {
    // We try to pick an object
-   var pickResult = scene.pick(scene.pointerX, scene.pointerY);
-   console.log(pickResult);
+  // var pickResult = scene.pick(scene.pointerX, scene.pointerY);
+   //console.log(pickResult);
 });
 	
 /*
@@ -740,25 +821,25 @@ window.addEventListener("click", function () {
 
 
   // Fountain object
-  var assettManager = new AssetManager();
+
 assettManager.set_scene(scene);
 assettManager.load_soudnds();
 
-var player = new PlayerObject();
+
 player.set_team_data(teamdata);
 scene.interactive_objects = new Array();
 
 
 
 
- var fear_types = new FearTypes();
+
 fear_types.set_scene(scene);
 fear_types.set_player(player);
 fear_types.set_asset_manager(assettManager);
 fear_types.set_team_data(teamdata);
 player.set_scene_manager(sceneManager);
 fear_types.create(0,'fearorb',new BABYLON.Vector3(2, .6, 0),dataManager.get_data_value('fearorbtypes','7thoctavepurple'));
-console.log(dataManager.get_data_value('fearorbtypes','7thoctavepurple'));
+
 var cylinder2 = BABYLON.MeshBuilder.CreateCylinder("test", {height: .8, diameter: .5}, scene);
     cylinder2.position = new BABYLON.Vector3(.5, 1, 0);
     scene.test = cylinder2;
@@ -766,7 +847,7 @@ var cylinder2 = BABYLON.MeshBuilder.CreateCylinder("test", {height: .8, diameter
 scene.interactive_objects.push(cylinder2);
 //player.setCameraOnPlayer(false);
 Promise.all([
-      BABYLON.SceneLoader.ImportMesh(null,"./assets/players/starman/", "starmangoodtest.glb", scene, function (meshes,particles,skeltons)  {
+      BABYLON.SceneLoader.ImportMesh(null,"./assets/players/Mage/", "Mage.glb", scene, function (meshes,particles,skeltons)  {
  		player.setScene(scene);
  		player.setCamera(camera)
 
@@ -821,136 +902,7 @@ Promise.all([
 
 
 
-var  createFearScene1 = function()
-{
-    var scene = new BABYLON.Scene(engine);
- 	//scene.debugLayer.show();
 
-    var gravityVector = new BABYLON.Vector3(0,-9.8, 0);
-	var physicsPlugin = new BABYLON.CannonJSPlugin();
-	scene.enablePhysics(gravityVector, physicsPlugin);
-    scene.collisionsEnabled = true;
-   // var camera = new BABYLON.FollowCamera("FollowCam", new BABYLON.Vector3(0, 0, 0), scene);
-   var camera = new BABYLON.UniversalCamera("UniversalCamera", new BABYLON.Vector3(10, 8, 16), scene);
-        camera.attachControl(canvas, true);
-   // camera.radius = 10; // how far from the object to follow
-   // camera.heightOffset = 3; // how high above the object to place the camera
-
-   // camera.cameraAcceleration = 0; // how fast to move
-  //  camera.maxCameraSpeed = 20; // speed limit
-     scene.activeCamera = camera;
-   var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
-
-var player_position_mesh = false;
- BABYLON.SceneLoader.ImportMesh("","./assets/spaces/fearspaces/fearspace1/", "fearspace1.glb", scene, function (meshes,particles,skeltons) {
- 	
-
-
-  		meshes.forEach(function(mesh,index){
-  		
-
-		if(mesh.name == 'camera-look-at'){
-  			 camera.setTarget(mesh.position);
-camera.lockedTarget = mesh; 
-        //camera.rotation.z = 0;
-       //camera.rotation.x = 0;
-//camera.rotation.x = Math.PI / 180;
-//camera.rotation.z = Math.PI / 90;
-        // camera.cameraRotation( new BABYLON.Vector2(0, Math.PI / 90));
-  			mesh.isVisible = false;
-  			return;
-
-  		}
-  		if(mesh.name=='camera-position') {
-  			//camera.position = mesh.position;
-   
-
-  			camera.position.y = 8;
-  			camera.position.x =10;
-        //camera.rotation.y = Math.PI / 90;
-        camera.position.z =16;
-  			mesh.isVisible = false;
-  			return;
-  		}
-  		if(mesh.name =='player1-position'){
-  			mesh.isVisible = false;
-  			player_position_mesh = mesh;
-
-  			return;
-  		}
-  		if(mesh.name=='fear1-position'){
-  		   mesh.isVisible = false;
-  		   return;
-  		}
-
-
-
-
-  		if(mesh.name != 'player'){
-  		mesh.physicsImpostor = new BABYLON.PhysicsImpostor(mesh, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.9 }, scene);
-
-  		}
-
-  		
-
-
-  		});
-
-
-        
-    });
-var player_mesh = false;
-      BABYLON.SceneLoader.ImportMesh(null,"./assets/players/starman/", "starmangoodtest.glb", scene, function (meshes,particles,skeltons)  {
-      	 player_mesh = meshes[0];
-	player_mesh.scaling.x = 	player_mesh.scaling.y = 	player_mesh.scaling.z = .8;
-
-     	player_mesh.position = player_position_mesh.position;
-     //	player_mesh.position.z += 10;
-     player_mesh.position.x = -5;
-     player_mesh.position.z = 10;
-     player_mesh.rotation.y = -6.28319;
-     player_mesh.position.y = 1;
-         player_mesh.rotate(BABYLON.Axis.Y,3.3, BABYLON.Space.WORLD);
-      });
-
-      BABYLON.SceneLoader.ImportMesh(null,"./assets/feartypes/purplestar/", "purplestar.glb", scene, function (meshes,particles,skeltons)  {
-         var purple_star = meshes[0];
-  purple_star.scaling.x =   purple_star.scaling.y =   purple_star.scaling.z = .8;
-    console.log('loaded purple star');
-      //urple_star.position = player_position_mesh.position;
-     // player_mesh.position.z += 10;
-     purple_star.position.x = -5;
-     purple_star.position.z = 24;
-     purple_star.rotation.y = -6.28319;
-     purple_star.position.y = 1;
-         purple_star.rotate(BABYLON.Axis.Y,3.3, BABYLON.Space.WORLD);
-      });
-
-    // Game/Render loop
-    scene.onBeforeRenderObservable.add(()=>{
-
-    //	player.update();
-  
-    })
-
-
-    scene.onBeforePhysicsObservable.add(function() {
-     
-  
-   /* if(player.isReady()){
- fear_types.physicsupdate();
- }*/
-
-    });
-
-
-
-
-
-
-
- 		return scene;
-}
 
 
 window.addEventListener('click',function(){
@@ -961,12 +913,12 @@ window.addEventListener('click',function(){
 
             // call the createScene function
             var scene = createScene();
-           var fearscene1 = createFearScene1();
+           //var fearscene1 = createFearScene1();
             // run the render loop
 
       
             sceneManager.add_scene('level','1',scene);
-            sceneManager.add_scene('fear','fearscene1',fearscene1);
+           // sceneManager.add_scene('fear','fearscene1',fearscene1);
             sceneManager.set_active_scene('level','1')
 
             engine.runRenderLoop(function(){

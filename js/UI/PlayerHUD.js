@@ -28,8 +28,94 @@ this.team_battle_bar = document.getElementById('team-battle-bar');
 this.add_click_listeners();
 }
 
+update_action_team_battle_bar_option(option,optionclass)
+{
 
-animate_battle_bar_up()
+var options =  document.getElementsByClassName("battle-option");
+for (i = 0; i < options.length; i++) {
+ 	removeClass(options[i],"selected");
+ 	removeClass(options[i],"active");
+}
+
+
+for (i = 0; i < options.length; i++) {
+
+ var id = options[i].getAttribute('data-id');
+ if(id == option) {
+ 	addClass(options[i],optionclass);
+ 	break;
+ }
+}
+
+}
+
+update_team_battle_bar_html(currentteam,teamdata,feardata){
+	 var teamstats = document.getElementById('team-stats-battle-info-display');
+	 var feartypeinfo = document.getElementById('fear-types-battle-info-display');
+	
+	console.log('Player hud update battle html');
+	console.log(teamdata);
+	console.log(feardata);
+var team_html = `
+<div class='team-member-data-label'>
+<p class='team-member-health-label'>Health:</p>
+<p class='team-member-mana-label'>Mana:</p>
+</div>
+`;
+
+
+	currentteam.forEach(function(item,index){
+
+		 var player = teamdata[item];
+		var name = player['default-name'];
+		var currenthealth = player['current-health'];
+		var maxhealth = player['max-health'];
+		var currentmana = player['current-mana'];
+		var maxmana = player['max-mana'];
+		var ui_image = player['UIimage'];
+	team_html +=`
+     <div class='team-bar-member'>
+              <img src='${ui_image}'/>
+              <p class='team-member-name'>
+              ${name}
+              </p>
+              <p class='team-member-health-container'>
+              <span id='team-member-${index}-currenthealth'>${currenthealth}</span>&nbsp;/&nbsp;
+              <span id='team-member-${index}-totalhealth'>${maxhealth}</span>
+              </p>
+              <p class='team-member-mana-container'>
+              <span id='team-member-${index}-currentmana'>${currentmana}</span>&nbsp;/&nbsp;
+              <span id='team-member-${index}-currentmana'>${maxmana}</span>
+              </p>
+        </div>`;
+	});
+teamstats.innerHTML = team_html;
+
+
+
+var fear_html = ``;
+
+	feardata.forEach(function(item,index){
+		var name = item['displayname'];
+ fear_html += `
+     <div >
+              <p>${name}</p>
+                
+                  <div class="fear-type-healthbar-container">
+                  <div data-width='0' data-id='${index}' class="fear-type-healthbar"></div>
+                  </div>
+             
+            </div>
+ `;
+
+});
+feartypeinfo.innerHTML = fear_html;	
+
+}
+
+
+
+animate_battle_bar_up(callback=null)
 {
 console.log('animating_battle_bar_up!!');
 var top = 100;
@@ -38,8 +124,10 @@ var player_hud = this;
 
     function animate_battle_bar_out_id_frame() {
 
-      if (top <= 85) {
+      if (top <= 77) {
+      	  if(callback != null){
     		callback(player_hud);
+    	}
         clearInterval(animate_battle_bar_out_id);
 
       } else {
@@ -54,7 +142,7 @@ var player_hud = this;
     }
 }
 
-animate_bottom_bar_up(callback)
+animate_bottom_bar_up(callback=null)
 {
 
 var top = 100;
@@ -64,7 +152,9 @@ var player_hud = this;
     function animate_bottom_bar_out_id_frame() {
 
       if (top <= 85) {
+      		if(callback!=null){
     		callback(player_hud);
+    	}
         clearInterval(animate_bottom_bar_out_id);
 
       } else {
@@ -78,7 +168,7 @@ var player_hud = this;
 
     } 
 }
-animate_bottom_bar_down(callback)
+animate_bottom_bar_down(callback=null)
 {
 console.log('calling this!!');
 var top = 85;
@@ -88,7 +178,9 @@ var player_hud = this;
     function animate_bottom_bar_out_id_frame() {
 
       if (top >= 100) {
+      	if(callback != null){
   	callback(player_hud);
+  }
         clearInterval(animate_bottom_bar_out_id);
   
       } else {

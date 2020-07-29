@@ -12,11 +12,12 @@ export var teamplayerdata =
 			'Intelligence ':1,
 			'Strength':1,
 			'Love':1,
-			'max-health':20,
+			'max-health':99,
 			'max-mana':20,
-			'current-health':20,
+			'current-health':99,
 			'current-mana':20,
-			'class': 'Mage'
+			'class': 'Mage',
+			'UIimage' : '/games/divinestar/assets/UI/players/purplestar.png',
 
 		},
 		"Alchemist" : {
@@ -27,11 +28,12 @@ export var teamplayerdata =
 			'Intelligence ':1,
 			'Strength':1,
 			'Love':1,
-			'max-health':20,
+			'max-health':99,
 			'max-mana':20,
-			'current-health':20,
+			'current-health':99,
 			'current-mana':20,
-			'class': 'Alchemist'
+			'class': 'Alchemist',
+			'UIimage' : '/games/divinestar/assets/UI/players/purplestar.png',
 
 		},
 		"Telepathic" : {
@@ -42,11 +44,12 @@ export var teamplayerdata =
 			'Intelligence ':1,
 			'Strength':1,
 			'Love':1,
-			'max-health':20,
+			'max-health':99,
 			'max-mana':20,
-			'current-health':20,
+			'current-health':99,
 			'current-mana':20,
-			'class': 'Telepathic'
+			'class': 'Telepathic',
+			'UIimage' : '/games/divinestar/assets/UI/players/purplestar.png',
 
 		},
 		"Healer" : {
@@ -57,11 +60,12 @@ export var teamplayerdata =
 			'Intelligence ':1,
 			'Strength':1,
 			'Love':1,
-			'max-health':20,
+			'max-health':99,
 			'max-mana':20,
-			'current-health':20,
+			'current-health':99,
 			'current-mana':20,
-			'class': 'Healer'
+			'class': 'Healer',
+			'UIimage' : '/games/divinestar/assets/UI/players/purplestar.png',
 
 		},
 		"LightWarrior" : {
@@ -72,11 +76,12 @@ export var teamplayerdata =
 			'Intelligence ':1,
 			'Strength':1,
 			'Love':1,
-			'max-health':20,
+			'max-health':99,
 			'max-mana':20,
-			'current-health':20,
+			'current-health':99,
 			'current-mana':20,
-			'class': 'LightWarrior'
+			'class': 'LightWarrior',
+			'UIimage' : '/games/divinestar/assets/UI/players/purplestar.png',
 
 		},
 
